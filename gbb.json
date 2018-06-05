@@ -1,0 +1,15 @@
+{
+    "version": "0.5.0",
+    "tool": "go install",
+    "importpath": "github.com/voidint/star/build",
+    "variables": [
+        {
+            "variable": "Build",
+            "value": "{{.Date}}"
+        },
+        {
+            "variable": "GitCommitHash",
+            "value": "{{.GitCommit}}"
+        }
+    ]
+}
