@@ -6,6 +6,10 @@ import (
 
 	"github.com/urfave/cli"
 	"github.com/voidint/star/build"
+	"github.com/voidint/star/holder"
+
+	_ "github.com/voidint/star/holder/gitee"
+	_ "github.com/voidint/star/holder/github"
 )
 
 const shortVersion = "0.1.0"
@@ -27,8 +31,18 @@ func main() {
 		{
 			Name:  "login",
 			Usage: "Login the interactive environment",
-			Action: func(c *cli.Context) error {
-				fmt.Println("Wellcome to github star manager")
+			Action: func(ctx *cli.Context) error {
+				var hName string
+				if hName = ctx.Args().First(); hName == "" {
+					hName = holder.DefHolder
+				}
+
+				if sg := holder.PickStargazer(hName); sg == nil {
+					fmt.Fprintln(os.Stderr, fmt.Sprintf("[star] Invalid star holder name %q.", hName))
+					os.Exit(1)
+				}
+
+				runShell(hName)
 				return nil
 			},
 		},
