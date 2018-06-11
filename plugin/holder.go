@@ -1,24 +1,24 @@
-package holder
+package plugin
 
 import "sync"
 
-var pool = make(map[string]Stargazer)
+var pool = make(map[string]Holder)
 var mux sync.Mutex
 
-// Register Register stargazer with name.
-func Register(name string, sg Stargazer) {
+// Register Register Holder with name.
+func Register(name string, h Holder) {
 	mux.Lock()
 	defer mux.Unlock()
-	if sg == nil {
-		panic("Register stargazer is nil")
+	if h == nil {
+		panic("Register Holder is nil")
 	}
 	if _, dup := pool[name]; dup {
-		panic("Register called twice for stargazer " + name)
+		panic("Register called twice for Holder " + name)
 	}
-	pool[name] = sg
+	pool[name] = h
 }
 
-// Registered Return registered stargazer names.
+// Registered Return registered holder names.
 func Registered() (names []string) {
 	mux.Lock()
 	defer mux.Unlock()
@@ -29,8 +29,8 @@ func Registered() (names []string) {
 	return names
 }
 
-// PickStargazer Pick up stargazer by name.
-func PickStargazer(name string) Stargazer {
+// PickHolder Pick up holder by name.
+func PickHolder(name string) Holder {
 	mux.Lock()
 	defer mux.Unlock()
 
@@ -47,7 +47,8 @@ const (
 	DefHolder = "github"
 )
 
-// Stargazer Stargazer
-type Stargazer interface {
+// Holder holder
+type Holder interface {
 	Whoami() (holder string)
+	SetToken(token string)
 }

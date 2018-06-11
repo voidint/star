@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/urfave/cli"
 	"github.com/voidint/star/build"
-	"github.com/voidint/star/holder"
+	"github.com/voidint/star/plugin"
 
-	_ "github.com/voidint/star/holder/gitee"
-	_ "github.com/voidint/star/holder/github"
+	_ "github.com/voidint/star/plugin/gitee"
+	_ "github.com/voidint/star/plugin/github"
 )
 
 const shortVersion = "0.1.0"
@@ -34,15 +35,16 @@ func main() {
 			Action: func(ctx *cli.Context) error {
 				var hName string
 				if hName = ctx.Args().First(); hName == "" {
-					hName = holder.DefHolder
+					hName = plugin.DefHolder
 				}
 
-				if sg := holder.PickStargazer(hName); sg == nil {
+				if sg := plugin.PickHolder(hName); sg == nil {
 					fmt.Fprintln(os.Stderr, fmt.Sprintf("[star] Invalid star holder name %q.", hName))
 					os.Exit(1)
 				}
 
-				runShell(hName)
+				token := os.Getenv(fmt.Sprintf("STAR_%s_TOKEN", strings.ToUpper(hName)))
+				runShell(hName, token)
 				return nil
 			},
 		},
