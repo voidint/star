@@ -38,7 +38,7 @@ func main() {
 					hName = plugin.DefHolder
 				}
 
-				if sg := plugin.PickHolder(hName); sg == nil {
+				if h := plugin.PickHolder(hName); h == nil {
 					fmt.Fprintln(os.Stderr, fmt.Sprintf("[star] Invalid star holder name %q.", hName))
 					os.Exit(1)
 				}
