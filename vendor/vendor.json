@@ -45,8 +45,22 @@
 			"revisionTime": "2018-02-26T03:02:53Z"
 		},
 		{
+			"checksumSHA1": "BGm8lKZmvJbf/YOJLeL1rw2WVjA=",
+			"path": "golang.org/x/crypto/ssh/terminal",
+			"revision": "37a17fe027db43f76fd88b056ddf588563fc8722",
+			"revisionTime": "2018-05-09T00:09:24Z"
+		},
+		{
+			"checksumSHA1": "4iJcSJnyQ9MkIUPwMuJ23VGjBVk=",
 			"path": "golang.org/x/sys/unix",
-			"revision": ""
+			"revision": "56ede360ec1c541828fb88741b3f1049406d28f5",
+			"revisionTime": "2018-06-13T15:50:41Z"
+		},
+		{
+			"checksumSHA1": "cFNQekaQ8KckfywxwWwZauiz9BY=",
+			"path": "golang.org/x/sys/windows",
+			"revision": "56ede360ec1c541828fb88741b3f1049406d28f5",
+			"revisionTime": "2018-06-13T15:50:41Z"
 		}
 	],
 	"rootPath": "github.com/voidint/star"
