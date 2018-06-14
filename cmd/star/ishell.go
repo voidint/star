@@ -9,16 +9,12 @@ import (
 	"github.com/voidint/star/plugin"
 )
 
-func runShell(holderName, token string) {
+func runShell(holderName string, user *plugin.User) {
 	shell := ishell.NewWithConfig(&readline.Config{
-		Prompt: fmt.Sprintf("star@%s> ", holderName),
+		Prompt: fmt.Sprintf("[%s@%s] $ ", user.Login, holderName),
 	})
 
 	shell.Printf("Welcome To %s Star Interactive Shell\n", strings.Title(holderName))
-
-	holder := plugin.PickHolder(holderName)
-	holder.SetToken(token)
-	// plugin.Use(holderName)
 
 	shell.AddCmd(&initCmd)
 	shell.AddCmd(&pullCmd)

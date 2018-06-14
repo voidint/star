@@ -1,6 +1,9 @@
 package plugin
 
-import "sync"
+import (
+	"errors"
+	"sync"
+)
 
 var pool = make(map[string]Holder)
 var mux sync.Mutex
@@ -47,8 +50,49 @@ const (
 	DefHolder = "github"
 )
 
+type Configuration struct {
+	Repo   string
+	Branch string
+}
+
+// Authentication 登录认证信息
+type Authentication struct {
+	Token    string
+	Username string
+	Password string
+}
+
+// User 用户信息
+type User struct {
+	Login   string `json:"login"`
+	Name    string `json:"name"`
+	HTMLURL string `json:"html_url"`
+	Email   string `json:"email"`
+}
+
+// Pagination 分页参数
+type Pagination struct {
+	Page    int `json:"page"`
+	PerPage int `json:"per_page"`
+}
+
+// Star 星星
+type Star struct {
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	FullName    string `json:"full_name"`
+	HTMLURL     string `json:"html_url"`
+	Description string `json:"description"`
+}
+
+var (
+	// ErrBadCredentials 无效的认证信息
+	ErrBadCredentials = errors.New("bad credentials")
+)
+
 // Holder holder
 type Holder interface {
 	Whoami() (holder string)
-	SetToken(token string)
+	Login(auth *Authentication) (*User, error)
+	Init() error
 }

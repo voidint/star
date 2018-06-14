@@ -8,6 +8,7 @@ import (
 	"github.com/urfave/cli"
 	"github.com/voidint/star/build"
 	"github.com/voidint/star/plugin"
+	"golang.org/x/crypto/ssh/terminal"
 
 	_ "github.com/voidint/star/plugin/gitee"
 	_ "github.com/voidint/star/plugin/github"
@@ -32,19 +33,31 @@ func main() {
 		{
 			Name:  "login",
 			Usage: "Login the interactive environment",
-			Action: func(ctx *cli.Context) error {
+			Action: func(ctx *cli.Context) (err error) {
 				var hName string
 				if hName = ctx.Args().First(); hName == "" {
 					hName = plugin.DefHolder
 				}
 
-				if h := plugin.PickHolder(hName); h == nil {
-					fmt.Fprintln(os.Stderr, fmt.Sprintf("[star] Invalid star holder name %q.", hName))
-					os.Exit(1)
+				h := plugin.PickHolder(hName)
+				if h == nil {
+					return cli.NewExitError(fmt.Sprintf("[star] Invalid star holder name %q.", hName), 1)
 				}
 
-				token := os.Getenv(fmt.Sprintf("STAR_%s_TOKEN", strings.ToUpper(hName)))
-				runShell(hName, token)
+				auth := plugin.Authentication{
+					Token: os.Getenv(fmt.Sprintf("STAR_%s_TOKEN", strings.ToUpper(hName))),
+				}
+				if auth.Token == "" {
+					if auth.Username, auth.Password, err = readBasicAuth(); err != nil {
+						return cli.NewExitError(fmt.Sprintf("[star] %q.", err.Error()), 2)
+					}
+				}
+
+				user, err := h.Login(&auth)
+				if err != nil {
+					return cli.NewExitError(fmt.Sprintf("[star] Login failed %q.", err.Error()), 3)
+				}
+				runShell(hName, user)
 				return nil
 			},
 		},
@@ -54,4 +67,24 @@ func main() {
 		fmt.Fprintln(os.Stderr, fmt.Sprintf("[star] %s", err.Error()))
 		os.Exit(1)
 	}
+}
+
+func readBasicAuth() (username, password string, err error) {
+	state, err := terminal.MakeRaw(int(os.Stdin.Fd()))
+	if err != nil {
+		return "", "", err
+	}
+	defer terminal.Restore(int(os.Stdin.Fd()), state)
+	term := terminal.NewTerminal(os.Stdin, "")
+
+	term.SetPrompt("Enter Username: ")
+	username, err = term.ReadLine()
+	if err != nil {
+		return "", "", err
+	}
+	password, err = term.ReadPassword("Enter Password: ")
+	if err != nil {
+		return "", "", err
+	}
+	return username, password, nil
 }
