@@ -1,6 +1,12 @@
 package github
 
-import "github.com/voidint/star/plugin"
+import (
+	"fmt"
+	"io"
+	"net/http"
+
+	"github.com/voidint/star/plugin"
+)
 
 const (
 	name         = "github"
@@ -25,16 +31,17 @@ func (h *holder) Login(auth *plugin.Authentication) (u *plugin.User, err error) 
 	if auth == nil {
 		return nil, plugin.ErrBadCredentials
 	}
+	h.auth = auth
+
 	defer func() {
 		if u != nil && err == nil {
-			h.auth = auth
 			h.user = u
+		} else {
+			h.auth = nil
 		}
 	}()
-	if auth.Token != "" {
-		return h.fetchUserByToken(auth.Token)
-	}
-	return h.fetchUserByBasic(auth.Username, auth.Password)
+
+	return h.fetchUser()
 }
 
 func (h *holder) Init() error {
@@ -43,4 +50,20 @@ func (h *holder) Init() error {
 	// 	return err
 	// }
 	return nil
+}
+
+func (h *holder) reqWithAuth(method, url string, body io.Reader) (req *http.Request, err error) {
+	req, err = http.NewRequest(method, url, body)
+	if err != nil {
+		return nil, err
+	}
+	if h.auth == nil {
+		return nil, plugin.ErrBadCredentials
+	}
+	if h.auth.Token != "" {
+		req.Header.Add("Authorization", fmt.Sprintf("token %s", h.auth.Token))
+	} else {
+		req.SetBasicAuth(h.auth.Username, h.auth.Password)
+	}
+	return req, nil
 }
