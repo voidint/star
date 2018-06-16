@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
+	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli"
 	"github.com/voidint/star/build"
 	"github.com/voidint/star/plugin"
@@ -15,6 +17,10 @@ import (
 )
 
 const shortVersion = "0.1.0"
+
+var (
+	flog *os.File
+)
 
 func main() {
 	app := cli.NewApp()
@@ -27,6 +33,32 @@ func main() {
 			Name:  "voidnt",
 			Email: "voidint@126.com",
 		},
+	}
+
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "log-file",
+			Value: filepath.Join(os.TempDir(), "star.log"),
+			Usage: "log file path",
+		},
+	}
+
+	app.Before = func(ctx *cli.Context) (err error) {
+		flog, err = os.Create(ctx.GlobalString("log-file"))
+		if err != nil {
+			return err
+		}
+
+		log.Logger = log.Output(flog)
+		log.Logger = log.With().Caller().Logger()
+		return nil
+	}
+
+	app.After = func(ctx *cli.Context) error {
+		if flog != nil {
+			return flog.Close()
+		}
+		return nil
 	}
 
 	app.Commands = []cli.Command{
