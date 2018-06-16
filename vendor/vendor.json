@@ -39,6 +39,24 @@
 			"revisionTime": "2017-11-07T05:05:31Z"
 		},
 		{
+			"checksumSHA1": "thODFTDTNIRMfbRBb/JPrX9Y4Uw=",
+			"path": "github.com/rs/zerolog",
+			"revision": "1a88fbfdd0e441d7f77f13647adb40548a8bb59b",
+			"revisionTime": "2018-06-04T05:57:37Z"
+		},
+		{
+			"checksumSHA1": "xqWAq8wYO17kHy9UVbA9ifCzD3A=",
+			"path": "github.com/rs/zerolog/internal/cbor",
+			"revision": "1a88fbfdd0e441d7f77f13647adb40548a8bb59b",
+			"revisionTime": "2018-06-04T05:57:37Z"
+		},
+		{
+			"checksumSHA1": "aJb+KauxxfuznpChryynxtC98F0=",
+			"path": "github.com/rs/zerolog/internal/json",
+			"revision": "1a88fbfdd0e441d7f77f13647adb40548a8bb59b",
+			"revisionTime": "2018-06-04T05:57:37Z"
+		},
+		{
 			"checksumSHA1": "9/2qvuFPQxW7ZXzQSOYwqZb5cNg=",
 			"path": "github.com/urfave/cli",
 			"revision": "8e01ec4cd3e2d84ab2fe90d8210528ffbb06d8ff",
