@@ -39,6 +39,18 @@
 			"revisionTime": "2017-11-07T05:05:31Z"
 		},
 		{
+			"checksumSHA1": "KGCifxxR5cm2gz94i2iha+RIZlk=",
+			"path": "github.com/mattn/go-runewidth",
+			"revision": "ce7b0b5c7b45a81508558cd1dba6bb1e4ddb51bb",
+			"revisionTime": "2018-04-08T05:53:51Z"
+		},
+		{
+			"checksumSHA1": "sZPoLYTMt3Bz8HNvSeA5TRSx3M8=",
+			"path": "github.com/olekukonko/tablewriter",
+			"revision": "d4647c9c7a84d847478d890b816b7d8b62b0b279",
+			"revisionTime": "2018-05-06T12:14:14Z"
+		},
+		{
 			"checksumSHA1": "thODFTDTNIRMfbRBb/JPrX9Y4Uw=",
 			"path": "github.com/rs/zerolog",
 			"revision": "1a88fbfdd0e441d7f77f13647adb40548a8bb59b",
