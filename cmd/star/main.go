@@ -6,14 +6,15 @@ import (
 	"path/filepath"
 	"strings"
 
+	_ "github.com/voidint/star/plugin/gitee"
+	_ "github.com/voidint/star/plugin/github"
+
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli"
 	"github.com/voidint/star/build"
 	"github.com/voidint/star/plugin"
+	"github.com/voidint/star/store"
 	"golang.org/x/crypto/ssh/terminal"
-
-	_ "github.com/voidint/star/plugin/gitee"
-	_ "github.com/voidint/star/plugin/github"
 )
 
 const shortVersion = "0.1.0"
@@ -75,6 +76,8 @@ func main() {
 				if h == nil {
 					return cli.NewExitError(fmt.Sprintf("[star] Invalid star holder name %q.", hName), 1)
 				}
+
+				store.Use(hName)
 
 				auth := plugin.Authentication{
 					Token: os.Getenv(fmt.Sprintf("STAR_%s_TOKEN", strings.ToUpper(hName))),

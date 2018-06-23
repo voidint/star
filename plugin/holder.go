@@ -76,10 +76,8 @@ type Pagination struct {
 	PerPage int `json:"per_page"`
 }
 
-// Star 星星
-type Star struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
+// StarredRepo 标星的仓库
+type StarredRepo struct {
 	FullName    string `json:"full_name"`
 	HTMLURL     string `json:"html_url"`
 	Description string `json:"description"`
@@ -94,5 +92,7 @@ var (
 type Holder interface {
 	Whoami() (holder string)
 	Login(auth *Authentication) (*User, error)
+	FetchAllStarredRepos() (stars []*StarredRepo, err error)
+	FetchStarredRepos(pg *Pagination) (stars []*StarredRepo, err error)
 	Init() error
 }
