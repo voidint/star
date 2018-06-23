@@ -19,6 +19,8 @@ func runShell(holderName string, user *plugin.User) {
 	shell.AddCmd(&initCmd)
 	shell.AddCmd(&pullCmd)
 	shell.AddCmd(&pushCmd)
+	shell.AddCmd(&showCmd)
+	showCmd.AddCmd(&showGCmd)
 
 	shell.Run()
 }
