@@ -14,7 +14,7 @@ import (
 // GetFile 获取文件内容。
 // 参考 https://developer.github.com/v3/repos/contents/#get-contents
 func (h *holder) GetFile(path string) (*plugin.File, error) {
-	url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", rootEndpoint, h.auth.Username, h.conf.Repo, path)
+	url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", rootEndpoint, h.user.Login, h.conf.Repo, path)
 	req, err := h.reqWithAuth(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (h *holder) GetFile(path string) (*plugin.File, error) {
 // CreateFile 在目标路径下创建文件。
 // 参考 https://developer.github.com/v3/repos/contents/#create-a-file
 func (h *holder) CreateFile(path string, content []byte) (*plugin.File, error) {
-	url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", rootEndpoint, h.auth.Username, h.conf.Repo, path)
+	url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", rootEndpoint, h.user.Login, h.conf.Repo, path)
 
 	reqBody := h.jsonBody4CreateFile(content)
 	req, err := h.reqWithAuth(http.MethodPut, url, bytes.NewReader(reqBody))
@@ -73,7 +73,7 @@ func (h *holder) jsonBody4CreateFile(content []byte) (data []byte) {
 // UpdateFile 更新文件。
 // 参考 https://developer.github.com/v3/repos/contents/#update-a-file
 func (h *holder) UpdateFile(path, sha string, content []byte) (*plugin.File, error) {
-	url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", rootEndpoint, h.auth.Username, h.conf.Repo, path)
+	url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", rootEndpoint, h.user.Login, h.conf.Repo, path)
 
 	reqBody := h.jsonBody4UpdateFile(sha, content)
 	req, err := h.reqWithAuth(http.MethodPut, url, bytes.NewReader(reqBody))
