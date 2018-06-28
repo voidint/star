@@ -19,6 +19,13 @@ var initCmd = ishell.Cmd{
 	Func: func(ctx *ishell.Context) {
 		h := plugin.PickHolder(store.CurrentHolder())
 
+		if _, err := h.GetRepo(); err == plugin.ErrRepoNotFound {
+			if _, err = h.CreateRepo(); err != nil {
+				ctx.Println(err)
+				return
+			}
+		}
+
 		repos, err := h.FetchAllStarredRepos()
 		if err != nil {
 			ctx.Println(err)
@@ -27,11 +34,8 @@ var initCmd = ishell.Cmd{
 		store.OverwriteRepoedTag(tag.Default().Name, repos)
 
 		repoedTags := store.ListRepoedTag()
-
 		readme, _ := view.GenReadme(repoedTags)
-		// ctx.Println(string(readme))
 		data, _ := view.GenJSONData(repoedTags)
-		// ctx.Println(string(data))
 
 		fReadme, err := h.GetFile(readmePath)
 		if err == plugin.ErrFileNotFound {

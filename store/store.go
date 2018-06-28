@@ -40,12 +40,12 @@ type store struct {
 // RepoedTag 包含标星仓库列表的Tag
 type RepoedTag struct {
 	Tag   *tag.Tag
-	Repos []*plugin.StarredRepo
+	Repos []*plugin.Repo
 }
 
 // TaggedRepo 包含Tag列表的标星仓库
 type TaggedRepo struct {
-	Repo *plugin.StarredRepo
+	Repo *plugin.Repo
 	Tags []*tag.Tag
 }
 
@@ -80,7 +80,7 @@ func CurrentHolder() string {
 }
 
 // OverwriteRepoedTag 覆写当前Holder的标星仓库
-func OverwriteRepoedTag(tagName string, repos []*plugin.StarredRepo) {
+func OverwriteRepoedTag(tagName string, repos []*plugin.Repo) {
 	once.Do(func() {
 		initStores()
 	})
