@@ -51,7 +51,6 @@ func main() {
 		}
 
 		log.Logger = log.Output(flog)
-		log.Logger = log.With().Caller().Logger()
 		return nil
 	}
 

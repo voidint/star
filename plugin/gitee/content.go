@@ -1,4 +1,4 @@
-package github
+package gitee
 
 import (
 	"bytes"
@@ -12,14 +12,14 @@ import (
 )
 
 // GetFile 获取文件内容。
-// 参考 https://developer.github.com/v3/repos/contents/#get-contents
+// 参考 https://gitee.com/api/v5/swagger#/getV5ReposOwnerRepoContents(Path)
 func (h *holder) GetFile(path string) (*plugin.File, error) {
 	url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", rootEndpoint, h.user.Login, h.conf.Repo, path)
 	req, err := h.reqWithAuth(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
-	log.Debug().Str("URL", url).Msg("Get file content")
+	log.Debug().Str("GET URL", url).Msg("Get file content")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
@@ -40,11 +40,13 @@ func (h *holder) CreateFile(path string, content []byte) (*plugin.File, error) {
 	url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", rootEndpoint, h.user.Login, h.conf.Repo, path)
 
 	reqBody := h.jsonBody4CreateFile(content)
-	req, err := h.reqWithAuth(http.MethodPut, url, bytes.NewReader(reqBody))
+	req, err := h.reqWithAuth(http.MethodPost, url, bytes.NewReader(reqBody))
 	if err != nil {
 		return nil, err
 	}
-	log.Debug().Str("URL", url).Str("Request Body", string(reqBody)).Msg("Create a file")
+	req.Header.Add("Content-Type", "application/json")
+
+	log.Debug().Str("POST URL", url).Str("Request Body", string(reqBody)).Msg("Create a file")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
@@ -63,7 +65,7 @@ func (h *holder) CreateFile(path string, content []byte) (*plugin.File, error) {
 
 func (h *holder) jsonBody4CreateFile(content []byte) (data []byte) {
 	data, _ = json.Marshal(map[string]interface{}{
-		"message": "create a file",
+		"message": "Create a file",
 		"content": base64.StdEncoding.EncodeToString(content),
 		"branch":  h.conf.Branch,
 	})
@@ -71,7 +73,7 @@ func (h *holder) jsonBody4CreateFile(content []byte) (data []byte) {
 }
 
 // UpdateFile 更新文件。
-// 参考 https://developer.github.com/v3/repos/contents/#update-a-file
+// 参考 https://gitee.com/api/v5/swagger#/putV5ReposOwnerRepoContentsPath
 func (h *holder) UpdateFile(path, sha string, content []byte) (*plugin.File, error) {
 	url := fmt.Sprintf("%s/repos/%s/%s/contents/%s", rootEndpoint, h.user.Login, h.conf.Repo, path)
 
@@ -80,7 +82,9 @@ func (h *holder) UpdateFile(path, sha string, content []byte) (*plugin.File, err
 	if err != nil {
 		return nil, err
 	}
-	log.Debug().Str("URL", url).Str("Request Body", string(reqBody)).Msg("Update a file")
+	req.Header.Add("Content-Type", "application/json")
+
+	log.Debug().Str("PUT URL", url).Str("Request Body", string(reqBody)).Msg("Update a file")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
