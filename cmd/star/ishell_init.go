@@ -17,8 +17,10 @@ var initCmd = ishell.Cmd{
 	Name: "init",
 	Help: "pull stars then create repo",
 	Func: func(ctx *ishell.Context) {
+		// 0、获取当前holder（github/gitee）
 		h := plugin.PickHolder(store.CurrentHolder())
 
+		// 1、判断仓库是否存在，若不存在则创建。
 		if _, err := h.GetRepo(); err == plugin.ErrRepoNotFound {
 			if _, err = h.CreateRepo(); err != nil {
 				ctx.Println(err)
@@ -26,17 +28,21 @@ var initCmd = ishell.Cmd{
 			}
 		}
 
+		// 2、从远程拉取所欲标星仓库并存入本地默认标签下
 		repos, err := h.FetchAllStarredRepos()
 		if err != nil {
 			ctx.Println(err)
 			return
 		}
-		store.OverwriteRepoedTag(tag.Default().Name, repos)
+		// TODO 清空除默认节点(标签+标星仓库)外的所有节点
+		store.OverwriteRepos(tag.Default().Path, repos)
 
-		repoedTags := store.ListRepoedTag()
-		readme, _ := view.GenReadme(repoedTags)
-		data, _ := view.GenJSONData(repoedTags)
+		// 3、读取本地所有节点(标签+标星仓库)并生成README.md与data.json文件内容
+		nodes := store.ListNodes()
+		readme, _ := view.GenReadme(nodes)
+		data, _ := view.GenJSONData(nodes)
 
+		// 4、判断远程仓库中是否含有README.md，若不存在则创建。
 		fReadme, err := h.GetFile(readmePath)
 		if err == plugin.ErrFileNotFound {
 			if fReadme, err = h.CreateFile(readmePath, readme); err != nil {
@@ -48,11 +54,13 @@ var initCmd = ishell.Cmd{
 			ctx.Println(err)
 			return
 		}
+		// 5、更新远程的README.md文件内容
 		if _, err = h.UpdateFile(readmePath, fReadme.SHA, readme); err != nil {
 			ctx.Println(err)
 			return
 		}
 
+		// 6、判断远程仓库中是否含有data.json，若不存在则创建。
 		fData, err := h.GetFile(dataPath)
 		if err == plugin.ErrFileNotFound {
 			if fData, err = h.CreateFile(dataPath, data); err != nil {
@@ -64,16 +72,10 @@ var initCmd = ishell.Cmd{
 			ctx.Println(err)
 			return
 		}
+		// 7、更新远程的data.json文件内容
 		if _, err = h.UpdateFile(dataPath, fData.SHA, data); err != nil {
 			ctx.Println(err)
 			return
 		}
-
-		// 1、判断仓库是否存在。若不存在则创建。
-		// 2、准备data.json数据。
-		// 3、依据data.json生成README.md内容。
-		// 4、判断README.md是否存在。若不存在则新增，反之则更新。
-		// 5、判断data.json文件是否存在。若不存在则新增，反之则更新。
-
 	},
 }

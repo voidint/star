@@ -19,9 +19,10 @@ var (
 
 // Tag 标签
 type Tag struct {
-	ID      string // 标签ID
-	PID     string // 父ID。若此属性为空，则表示该标签为根标签。
-	Name    string // 标签名，全局唯一。
+	// ID      string // 标签ID
+	// PID     string // 父ID。若此属性为空，则表示该标签为根标签。
+	Path    string // 标签路径，如'/计算机/网络/tcp_ip'
+	Name    string // 标签名
 	Desc    string
 	Builtin bool // 内置标签不可修改与删除
 }
@@ -29,7 +30,8 @@ type Tag struct {
 // Default 返回默认标签
 func Default() *Tag {
 	return &Tag{
-		ID:      "764272fd0ae0422d8d1541a55c46ec0c",
+		// ID:      "764272fd0ae0422d8d1541a55c46ec0c",
+		Path:    "/Misc",
 		Name:    "Misc",
 		Builtin: true,
 	}

@@ -57,12 +57,12 @@ func (h *holder) Login(auth *plugin.Authentication) (u *plugin.User, err error) 
 }
 
 func (h *holder) reqWithAuth(method, url string, body io.Reader) (req *http.Request, err error) {
+	if h.auth == nil {
+		return nil, plugin.ErrBadCredentials
+	}
 	req, err = http.NewRequest(method, url, body)
 	if err != nil {
 		return nil, err
-	}
-	if h.auth == nil {
-		return nil, plugin.ErrBadCredentials
 	}
 	if h.auth.Token != "" {
 		req.Header.Add("Authorization", fmt.Sprintf("token %s", h.auth.Token))
