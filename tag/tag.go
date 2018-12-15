@@ -1,20 +1,31 @@
 package tag
 
 import (
-	"encoding/json"
 	"sync"
 )
 
 const (
 	// Sep 标签层级分隔符
 	Sep = "/"
+
+	// DefaultPath 默认的标签路径
+	DefaultPath = "/Misc"
+	// DefaultName 默认标签名
+	DefaultName = "Misc"
 )
+
+// DefaultTag 默认标签
+var DefaultTag = Tag{
+	Path:    DefaultPath,
+	Name:    DefaultName,
+	Builtin: true,
+}
 
 var (
 	tmux sync.Mutex
-	tags = []*Tag{
-		Default(),
-	}
+	// tags = []Tag{
+	// 	Default(),
+	// }
 )
 
 // Tag 标签
@@ -28,14 +39,14 @@ type Tag struct {
 }
 
 // Default 返回默认标签
-func Default() *Tag {
-	return &Tag{
-		// ID:      "764272fd0ae0422d8d1541a55c46ec0c",
-		Path:    "/Misc",
-		Name:    "Misc",
-		Builtin: true,
-	}
-}
+// func Default() Tag {
+// 	return Tag{
+// 		// ID:      "764272fd0ae0422d8d1541a55c46ec0c",
+// 		Path:    "/Misc",
+// 		Name:    "Misc",
+// 		Builtin: true,
+// 	}
+// }
 
 // CreateTag 创建标签
 func CreateTag(name string) error {
@@ -53,16 +64,16 @@ func RenameTag(name string) error {
 }
 
 // ListTags 返回当前的标签列表
-func ListTags() (items []Tag) {
-	tmux.Lock()
-	defer tmux.Unlock()
+// func ListTags() (items []Tag) {
+// 	tmux.Lock()
+// 	defer tmux.Unlock()
 
-	items = make([]Tag, 0, len(tags))
-	for i := range tags {
-		items = append(items, *tags[i])
-	}
-	return items
-}
+// 	items = make([]Tag, 0, len(tags))
+// 	for i := range tags {
+// 		items = append(items, tags[i])
+// 	}
+// 	return items
+// }
 
 // FindTag 根据标签名称查找标签
 func FindTag(name string) *Tag {
@@ -82,23 +93,23 @@ func FindTag(name string) *Tag {
 	return nil
 }
 
-// Rebuild 依据序列化后的JSON数据重建Tag列表
-func Rebuild(data []byte) (err error) {
-	var ts []*Tag
-	if err = json.Unmarshal(data, &ts); err != nil {
-		return err
-	}
-	tmux.Lock()
-	tags = ts
-	tmux.Unlock()
-	return nil
-}
+// // Rebuild 依据序列化后的JSON数据重建Tag列表
+// func Rebuild(data []byte) (err error) {
+// 	var ts []Tag
+// 	if err = json.Unmarshal(data, &ts); err != nil {
+// 		return err
+// 	}
+// 	tmux.Lock()
+// 	tags = ts
+// 	tmux.Unlock()
+// 	return nil
+// }
 
-// MarshalJSON 将当前标签列表序列化成JSON
-func MarshalJSON() []byte {
-	tmux.Lock()
-	defer tmux.Unlock()
+// // MarshalJSON 将当前标签列表序列化成JSON
+// func MarshalJSON() []byte {
+// 	tmux.Lock()
+// 	defer tmux.Unlock()
 
-	b, _ := json.MarshalIndent(tags, "  ", "  ")
-	return b
-}
+// 	b, _ := json.MarshalIndent(tags, "  ", "  ")
+// 	return b
+// }

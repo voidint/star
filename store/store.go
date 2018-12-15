@@ -23,46 +23,18 @@ func initStores() {
 	defer hmux.Unlock()
 	log.Debug().Msg("init stores")
 
-	// stores = make(map[string]*store)
-	// for _, hName := range plugin.Registered() {
-	// 	log.Debug().Msgf("init store for %s", hName)
-	// 	stores[hName] = &store{
-	// 		tags: []*RepoedTag{
-	// 			{Tag: tag.Default()},
-	// 		},
-	// 	}
-	// }
 	stores = make(map[string][]*Node)
 	for _, hName := range plugin.Registered() {
 		log.Debug().Msgf("init store for %s", hName)
 		stores[hName] = []*Node{ // 初始化一个带默认tag的节点
 			{
-				Tag:      tag.Default(),
+				Tag:      &tag.DefaultTag,
 				Repos:    []*plugin.Repo{},
 				Children: []*Node{},
 			},
 		}
 	}
 }
-
-/*
-type store struct {
-	tags  []*RepoedTag
-	repos []*TaggedRepo
-}
-
-// RepoedTag 包含标星仓库列表的Tag
-type RepoedTag struct {
-	Tag   *tag.Tag
-	Repos []*plugin.Repo
-}
-
-// TaggedRepo 包含Tag列表的标星仓库
-type TaggedRepo struct {
-	Repo *plugin.Repo
-	Tags []*tag.Tag
-}
-*/
 
 // Use 切换到指定Holder
 func Use(holderName string) {
@@ -94,51 +66,11 @@ func CurrentHolder() string {
 	return curHolder
 }
 
-/*
-// OverwriteRepoedTag 覆写当前Holder的标星仓库
-func OverwriteRepoedTag(tagName string, repos []*plugin.Repo) {
-	once.Do(func() {
-		initStores()
-	})
-
-	hmux.Lock()
-	defer hmux.Unlock()
-
-	curStore.tags = []*RepoedTag{
-		{
-			Tag:   tag.Default(), // TODO find tag by name
-			Repos: repos,
-		},
-	}
-}
-
-// ListRepoedTag 返回当前Holder的标星仓库列表
-func ListRepoedTag() []RepoedTag {
-	once.Do(func() {
-		initStores()
-	})
-
-	hmux.Lock()
-	defer hmux.Unlock()
-
-	items := make([]RepoedTag, 0, len(curStore.tags))
-	for i := range curStore.tags {
-		items = append(items, *curStore.tags[i])
-	}
-	return items
-}
-
-// TagRepo 为标星仓库打标签
-func TagRepo(tag, repo string) error {
-	return nil
-}
-*/
-
 // Node 节点
 type Node struct {
-	Tag      *tag.Tag
-	Repos    []*plugin.Repo
-	Children []*Node
+	Tag      *tag.Tag       `json:"tag"`
+	Repos    []*plugin.Repo `json:"repos"`
+	Children []*Node        `json:"children"`
 }
 
 // Nodes 节点集合
@@ -193,32 +125,14 @@ func ListNodes() []*Node {
 	return stores[curHolder]
 }
 
-// FindNode 查找指定tag路径的节点。典型的tag路径如'/计算机/网络/tcp'
-// func (nodes Nodes) FindNode(tagPath string) *Node {
-// 	tags := strings.Split(tagPath, "/")
-// 	// TODO 清除空的tag元素
+// ReplaceNodes 替换当前常见的节点列表
+func ReplaceNodes(nodes []*Node) {
+	once.Do(func() {
+		initStores()
+	})
 
-// 	for i, tag := range tags {
-// 		if tag == "" {
-// 			continue
-// 		}
-// 		for _, node := range nodes {
-// 			if node.Tag != nil && node.Tag.Name == tagPath {
-// 				if i == len(tags)-1 {
-// 					return node
-// 				}
-// 				findNodeByTagName(node.Children)
-// 			}
+	hmux.Lock()
+	defer hmux.Unlock()
 
-// 		}
-// 	}
-// }
-
-// func findNodeByTagName(nodes []*Node, tagName string) *Node {
-// 	for i := range nodes {
-// 		if nodes[i].Tag != nil && nodes[i].Tag.Name == tagName {
-// 			return nodes[i]
-// 		}
-// 	}
-// 	return nil
-// }
+	stores[curHolder] = nodes
+}

@@ -35,7 +35,7 @@ var initCmd = ishell.Cmd{
 			return
 		}
 		// TODO 清空除默认节点(标签+标星仓库)外的所有节点
-		store.OverwriteRepos(tag.Default().Path, repos)
+		store.OverwriteRepos(tag.DefaultPath, repos)
 
 		// 3、读取本地所有节点(标签+标星仓库)并生成README.md与data.json文件内容
 		nodes := store.ListNodes()
