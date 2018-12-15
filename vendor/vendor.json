@@ -27,6 +27,12 @@
 			"revisionTime": "2015-05-15T14:53:56Z"
 		},
 		{
+			"checksumSHA1": "Tf9A+jAvPFtVkO8K0cnzhOTgFFA=",
+			"path": "github.com/go-resty/resty",
+			"revision": "a59932b061db030cf7edc11d970c8b6013d04a32",
+			"revisionTime": "2018-12-05T06:38:13Z"
+		},
+		{
 			"checksumSHA1": "SEnjvwVyfuU2xBaOfXfwPD5MZqk=",
 			"path": "github.com/mattn/go-colorable",
 			"revision": "efa589957cd060542a26d2dd7832fd6a6c6c3ade",
@@ -79,6 +85,10 @@
 			"path": "golang.org/x/crypto/ssh/terminal",
 			"revision": "37a17fe027db43f76fd88b056ddf588563fc8722",
 			"revisionTime": "2018-05-09T00:09:24Z"
+		},
+		{
+			"path": "golang.org/x/net/publicsuffix",
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "4iJcSJnyQ9MkIUPwMuJ23VGjBVk=",
