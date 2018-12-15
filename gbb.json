@@ -1,5 +1,5 @@
 {
-    "version": "0.5.0",
+    "version": "0.6.0",
     "tool": "go install",
     "importpath": "github.com/voidint/star/build",
     "variables": [
