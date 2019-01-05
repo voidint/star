@@ -28,7 +28,7 @@ func main() {
 	app.Name = "star"
 	app.Usage = "Github star manager."
 	app.Version = build.Version(shortVersion)
-	app.Copyright = "Copyright (c) 2018, 2018, voidint. All rights reserved."
+	app.Copyright = "Copyright (c) 2018, 2019, voidint. All rights reserved."
 	app.Authors = []cli.Author{
 		cli.Author{
 			Name:  "voidnt",
